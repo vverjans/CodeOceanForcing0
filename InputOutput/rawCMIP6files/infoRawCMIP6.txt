@@ -1,0 +1,4 @@
+
+This directory should contain raw climatic output file of thetao and so variables.
+These can be downloaded from: https://esgf-node.llnl.gov/search/cmip6/
+
