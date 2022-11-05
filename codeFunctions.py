@@ -22,6 +22,32 @@ def freezingPoint(sal,depth):
     tempfr = lb1*sal+lb2+lb3*depth #Cowton et al. (2015) Eq.7
     return(tempfr)
 
+def calcDpAveraged(values,depth,dmin,dmax):
+    '''
+    Calculates depth-averaged values
+    '''
+    if np.all(depth<=0): #function must use depth positive downwards
+        depth = -1*depth
+    if depth[0]>0:
+        depth  = np.append(0,depth)
+        values = np.append(values[0],values) #approxiumation for value at surface
 
+    # Limit domain to [dmin:dmax] range # 
+    dp0  = depth[depth<abs(dmax)]
+    vl0  = values[depth<abs(dmax)]
+    dp1  = dp0[dp0>abs(dmin)]
+    vl1  = vl0[dp0>abs(dmin)]
+    # Interpolate values at dmin and dmax #
+    if np.any(depth<=abs(dmin)):
+        dp1  = np.append(dmin,dp1)
+        vl1  = np.append(linearInterpolation(depth,values,[dmin]),vl1)
+    if np.any(depth>=abs(dmax)):
+        dp1 = np.append(dp1,dmax)
+        vl1 = np.append(vl1,linearInterpolation(depth,values,[dmax]))
+
+    deltaz      = dp1[1:]-dp1[0:-1]
+    valuesav    = (vl1[1:]+vl1[0:-1])/2 #mean value over interval
+    averagedval = np.sum(deltaz*valuesav)/np.sum(deltaz) #values integrated over [dmin:dmax]
+    return(averagedval)
 
     
